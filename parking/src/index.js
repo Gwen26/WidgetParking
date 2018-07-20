@@ -4,22 +4,8 @@ class WidgetParking extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {parkings: [], value: ''};
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = {parkings: [], counter: 0};
     }
-
-    handleChange(event) {
-        this.setState({value: event.target.value});
-    }
-
-
-    handleSubmit(event) {
-        console.log(this.state.value)
-        event.preventDefault();
-    }
-
 
     componentDidMount() {
         fetch('https://data.rennesmetropole.fr/api/records/1.0/search/?dataset=export-api-parking-citedia')
@@ -30,7 +16,8 @@ class WidgetParking extends Component {
             })
 
         this.timer = setInterval(() => {
-            this.props.animate().then(() => this.setState({parkings: new []}));
+            const { parkings, counter } = this.state;
+            this.props.animate().then(() => this.setState({counter: counter >= parkings.length ? 0 : counter + 1}));
         }, 10000);
     }
 
@@ -40,6 +27,13 @@ class WidgetParking extends Component {
 
 
     render() {
+
+        const { parkings, counter } = this.state;
+        const parking = parkings[counter];
+
+        if (!parkings[counter]) {
+            return (<div></div>);
+        }
 
         /*
     orange : #FFA240
@@ -58,19 +52,13 @@ class WidgetParking extends Component {
             border: 'solid 2px #0988B2',
             borderRadius: '5px'
         };
-        const items = this.state.parkings.map(parking => (
+        const item = (
             <article key={parking.fields.key}>
                 <h3>{parking.fields.key}</h3>
                 <h3>{parking.fields.free} places disponibles</h3>
                 <h4>{parking.fields.status}</h4>
             </article>
-        ));
-
-        const parkings = this.state.parkings.map(parking => (
-            <article>
-                <h4>{parking.fields.key}</h4>
-            </article>
-        ));
+        );
 
         const date = new Date();
 
@@ -79,21 +67,7 @@ class WidgetParking extends Component {
                 <div style={style}>{date.toLocaleDateString('fr-FR')}</div>
                 <div style={style}>
                     <div>
-                        {items[0]}
-                    </div>
-                    <div>
-                        <form onSubmit={this.handleSubmit}>
-                            <label>
-                                 Parkings:
-                                <select value={parkings} onChange={this.handleChange}>
-                                    <option value={parkings[1]}>{parkings[1]}</option>
-                                    <option value={parkings[2]}>{parkings[2]}</option>
-                                    <option value={parkings[3]}>{parkings[3]}</option>
-                                    <option value={parkings[4]}>{parkings[4]}</option>
-                                </select>
-                            </label>
-                            <input type="submit" value="Submit" />
-                        </form>
+                        {item}
                     </div>
                 </div>
 
