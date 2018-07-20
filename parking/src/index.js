@@ -4,7 +4,7 @@ class WidgetParking extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {parkings: [], date: new Date(), value: ''};
+        this.state = {parkings: [], value: ''};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,8 +22,6 @@ class WidgetParking extends Component {
 
 
     componentDidMount() {
-        this.setState({date: new Date()});
-
         fetch('https://data.rennesmetropole.fr/api/records/1.0/search/?dataset=export-api-parking-citedia')
             .then(response => response.json())
             .then(data => {
@@ -74,9 +72,11 @@ class WidgetParking extends Component {
             </article>
         ));
 
+        const date = new Date();
+
         return (
             <div>
-                <div style={style}>{this.state.date.toLocaleDateString('fr-FR')}</div>
+                <div style={style}>{date.toLocaleDateString('fr-FR')}</div>
                 <div style={style}>
                     <div>
                         {items[0]}
