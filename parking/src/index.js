@@ -18,13 +18,12 @@ class WidgetParking extends Component {
         this.timer = setInterval(() => {
             const { parkings, counter } = this.state;
             this.props.animate().then(() => this.setState({counter: counter >= parkings.length ? 0 : counter + 1}));
-        }, 10000);
+        }, this.props.refreshInterval || 10000);
     }
 
     componentWillUnmount() {
         clearInterval(this.timer);
     }
-
 
     render() {
 
@@ -70,10 +69,7 @@ class WidgetParking extends Component {
                         {item}
                     </div>
                 </div>
-
-
             </div>
-
         );
     }
 
